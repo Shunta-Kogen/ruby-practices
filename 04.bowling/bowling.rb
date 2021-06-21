@@ -18,31 +18,51 @@ shots.each_slice(2) do |s|
   frames << s
 end
 
-# 1~9フレームのスコア計算
-point = 0
-frames.each_with_index do |frame, i|
-  point += if frame[0] == 10 && frames[i + 1][0] == 10 # ダブル
-             10 + 10 + frames[i + 2][0]
-           elsif frame[0] == 10 # ストライク
-             10 + frames[i + 1].sum
-           elsif frame.sum == 10 # スペア
-             10 + frames[i + 1][0]
-           else
-             frame.sum
-           end
-  # 9フレームまで実行
-  break if i == 8
+# ストライクのスコア配列を[10]に変換
+frames.each do |frame|
+  frame.pop(1) if frame[0] == 10
 end
 
-# 10フレームのスコア計算
-# 10フレームのスコア配列が3つある場合
-point += if frames[9][0] == 10 && frames[10][0] == 10
-           10 + 10 + frames[11][0]
-         # 10フレームのスコア配列が2つある場合
-         elsif (frames[9][0] == 10 && frames[10][0] != 10) || frames[9].sum == 10
-           10 + frames[10][0]
-         else
-           frames[9].sum
-         end
+# 10フレームのスコアを1つの配列に結合
+case frames.length
+when 11
+  frames[9].concat(frames[10])
+  frames.pop(1)
+when 12
+  frames[9].concat(frames[10], frames[11])
+  frames.pop(2)
+end
+
+# スコア計算
+point = 0
+frames.each_with_index do |frame, i|
+  case i
+  # 1~8フレーム
+  when 0..7
+    point += if frame[0] == 10 && frames[i + 1][0] == 10 # ダブル
+               10 + 10 + frames[i + 2][0]
+             elsif frame[0] == 10 # ストライク
+               10 + frames[i + 1].sum
+             elsif frame.sum == 10 # スペア
+               10 + frames[i + 1][0]
+             else
+               frame.sum
+             end
+  # 9フレーム
+  when 8
+    point += if frame[0] == 10 && frames[9][1] == 10 # ダブル
+               10 + 10 + frames[9][1]
+             elsif frame[0] == 10 # ストライク
+               10 + frames[9][0] + frames[9][1]
+             elsif frame.sum == 10 # スペア
+               10 + frames[9][0]
+             else
+               frame.sum
+             end
+  # 10フレーム
+  when 9
+    point += frame.sum
+  end
+end
 
 p point
