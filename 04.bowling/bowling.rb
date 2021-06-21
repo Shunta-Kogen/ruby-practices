@@ -50,7 +50,7 @@ frames.each_with_index do |frame, i|
              end
   # 9フレーム
   when 8
-    point += if frame[0] == 10 && frames[9][1] == 10 # ダブル
+    point += if frame[0] == 10 && frames[9][0] == 10 # ダブル
                10 + 10 + frames[9][1]
              elsif frame[0] == 10 # ストライク
                10 + frames[9][0] + frames[9][1]
