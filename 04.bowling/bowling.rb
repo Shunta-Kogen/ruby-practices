@@ -1,57 +1,50 @@
-# frozen_string_literal: true
+#frozen_string_literal: true
 
 score = ARGV[0]
 scores = score.split(',')
 shots = []
 scores.each do |s|
-  shots << if s == 'X' # ストライク
-             10
-           else
-             s.to_i
-           end
+  if s == 'X' # ストライク
+    shots << 10
+  else
+    shots << s.to_i
+  end
 end
 
-# スコア配列を1フレームごとに分割
-frame = []
-loop do
-  frame << if shots[0] == 10
-             [shots.shift]
-           else
-             shots.shift(2)
-           end
-  break if shots[0].nil?
-end
-
-# 10フレームのスコアを1つの配列に結合
-case frame.length
-when 11
-  frame[9].concat(frame[10])
-  frame.pop(1)
-when 12
-  frame[9].concat(frame[10], frame[11])
-  frame.pop(2)
+# スコア配列を10フレームに分割
+frames = []
+10.times do |i|
+  if shots[0] == 10
+    frames << [shots.shift]
+  else
+    frames << shots.shift(2)
+  end
+  
+  if i == 9
+    frames[-1].concat(shots)
+  end
 end
 
 # スコア計算
 point = 0
-frame.each_with_index do |frames, i|
+frames.each_with_index do |frame, i|
   case i
   # 1~9フレーム
   when 0..8
-    point += if frames[0] == 10 && frame[9][0] == 10 && i == 8 # 9フレーム目でのダブル
-               10 + 10 + frame[9][1]
-             elsif frames[0] == 10 && frame[i + 1][0] == 10 # ダブル
-               10 + 10 + frame[i + 2][0]
-             elsif frames[0] == 10 # ストライク
-               10 + frame[i + 1][0] + frame[i + 1][1]
-             elsif frames.sum == 10 # スペア
-               10 + frame[i + 1][0]
+    point += if frame[0] == 10 && frames[i + 1][0] == 10 && i == 8 # 9フレーム目でのダブル
+               10 + 10 + frames[i + 1][1]
+             elsif frame[0] == 10 && frames[i + 1][0] == 10 # ダブル
+               10 + 10 + frames[i + 2][0]
+             elsif frame[0] == 10 # ストライク
+               10 + frames[i + 1][0] + frames[i + 1][1]
+             elsif frame.sum == 10 # スペア  
+               10 + frames[i + 1][0]
              else
-               frames.sum
+               frame.sum
              end
   # 10フレーム
   when 9
-    point += frames.sum
+    point += frame.sum
   end
 end
 
