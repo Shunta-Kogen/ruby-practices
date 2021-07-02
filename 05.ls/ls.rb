@@ -88,6 +88,7 @@ else
     print get_permission(permission_number[0])
     print get_permission(permission_number[1])
     print get_permission(permission_number[2])
+    print '  '
   end
 
   # ハードリンクの数を出力
@@ -144,7 +145,6 @@ else
   array.each do |files|
     file = File::Stat.new(files)
     filemode(file)
-    print '  '
     hardlink(file)
     access_right(file)
     filesize(file)
