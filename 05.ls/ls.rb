@@ -116,9 +116,9 @@ else
     time_stamp = file.mtime
     time_stamp_to_date = time_stamp.to_date
     today_to_6_months_ago = Range.new(Date.today << 6, Date.today)
-    print time_stamp.strftime('%m')
+    print time_stamp.strftime('%_m')
     print ' '
-    print time_stamp.strftime('%d')
+    print time_stamp.strftime('%e')
     print ' '
     # 最終更新が6ヶ月以内の場合、時間を表示
     if today_to_6_months_ago.cover?(time_stamp_to_date)
