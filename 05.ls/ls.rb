@@ -5,26 +5,23 @@ require 'date'
 require 'optparse'
 
 option = ARGV.getopts('a', 'r', 'l')
-array = option['a'] == true ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
-option['r'] == true ? array = array.reverse : array
+array = option['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+option['r'] ? array = array.reverse : array
 
-if option['l'] != true
+if option['l']
 
   # オプションなし
   arrays = []
-  # array内の要素を3つの配列に分割
   # 列数を指定
   columns = 3.to_f
-  array.each_slice((array.length / columns).ceil) do |s|
-    arrays << s
-  end
+  # array内の要素を3つの配列に分割
+  arrays = array.each_slice((array.length / columns).ceil).to_a
 
   # transposeを使う場合、各配列の要素数を合わせる必要があるため
   # カレントディレクトリのファイル数に応じて、分割した最後の配列に空白を追加
-  if arrays.first.length != arrays[-1].length
-    loop do
-      arrays[-1] << ' '
-      break if arrays.first.length == arrays[-1].length
+  if arrays.first.length != arrays.last.length
+    (arrays.first.length - arrays.last.length).times do
+      arrays.last << ' '
     end
   end
 
@@ -32,8 +29,7 @@ if option['l'] != true
   transposed_arrays = arrays.transpose
 
   # 最も長いファイル名の文字数を取得
-  longest_filename = array.map(&:length)
-  longest_filename_length = longest_filename.max
+  longest_filename_length = array.max_by(&:length).length
 
   # 列同士の間隔
   column_space = 5
@@ -77,9 +73,8 @@ else
 
   # ファイルモードを出力
   def filemode(file)
-    filemode_number = file.mode.to_s(8)
-    # 8進数に変換したとき5桁だった場合、先頭に0を追加
-    filemode_number.insert(0, '0') if filemode_number.length == 5
+    # 8進数に変換した上で、値が5桁だった場合、先頭に0を追加
+    filemode_number = file.mode.to_s(8).rjust(6, '0')
     # ファイルモードをそれぞれに対応した項目ごとに分解する
     filetype_number = filemode_number[0..1]
     permission_number = filemode_number[3..5]
@@ -136,11 +131,9 @@ else
   end
 
   # 出力処理
-  total = 0
-  array.each do |files|
-    total += File::Stat.new(files).blocks
-  end
-  puts "total #{total}"
+  blocks_array = []
+  array.each { |files| blocks_array << File::Stat.new(files).blocks }
+  puts "total #{blocks_array.sum}"
 
   array.each do |files|
     file = File::Stat.new(files)
