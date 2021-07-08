@@ -8,35 +8,36 @@ option = ARGV.getopts('a', 'r', 'l')
 array = option['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
 option['r'] ? array = array.reverse : array
 
-if option['l']
+if option['l'] != true
 
   # オプションなし
   arrays = []
+
   # 列数を指定
-  columns = 3.to_f
+  COLUMNS = 3.to_f
+
   # array内の要素を3つの配列に分割
-  arrays = array.each_slice((array.length / columns).ceil).to_a
+  arrays = array.each_slice((array.length / COLUMNS).ceil).to_a
 
   # transposeを使う場合、各配列の要素数を合わせる必要があるため
   # カレントディレクトリのファイル数に応じて、分割した最後の配列に空白を追加
-  if arrays.first.length != arrays.last.length
-    (arrays.first.length - arrays.last.length).times do
-      arrays.last << ' '
-    end
+  (arrays.first.length - arrays.last.length).times do
+    arrays.last << ' '
   end
 
   # arraysの行と列を入れ替え
   transposed_arrays = arrays.transpose
 
   # 最も長いファイル名の文字数を取得
-  longest_filename_length = array.max_by(&:length).length
+  longest_filename_length = array.map(&:length).max
 
   # 列同士の間隔
-  column_space = 5
+  COLUMNN_SPACE = 5
+
   # 最も長いファイル名を列幅の基準とし、空いたスペースには空白を表示
   transposed_arrays.each do |files|
     files.each do |file|
-      print file.ljust(longest_filename_length + column_space, ' ')
+      print file.ljust(longest_filename_length + COLUMNN_SPACE, ' ')
     end
     print "\n"
   end
@@ -78,7 +79,6 @@ else
     # ファイルモードをそれぞれに対応した項目ごとに分解する
     filetype_number = filemode_number[0..1]
     permission_number = filemode_number[3..5]
-
     print get_filetype(filetype_number)
     print get_permission(permission_number[0])
     print get_permission(permission_number[1])
@@ -126,14 +126,11 @@ else
 
   # ファイルの名前を出力
   def filename(files)
-    print files
-    print "\n"
+    puts files
   end
 
   # 出力処理
-  blocks_array = []
-  array.each { |files| blocks_array << File::Stat.new(files).blocks }
-  puts "total #{blocks_array.sum}"
+  puts "total #{array.sum { |files| File::Stat.new(files).blocks }}"
 
   array.each do |files|
     file = File::Stat.new(files)
