@@ -8,7 +8,7 @@ option = ARGV.getopts('a', 'r', 'l')
 array = option['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
 option['r'] ? array = array.reverse : array
 
-if option['l'] != true
+if !option['l']
 
   # オプションなし
   arrays = []
