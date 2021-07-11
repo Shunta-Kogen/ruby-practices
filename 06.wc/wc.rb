@@ -5,32 +5,28 @@ require 'optparse'
 option = ARGV.getopts('l')
 
 # 改行数のカウント
-def count_lines(read_file)
-  print read_file.count("\n")
+def print_lines(read_file)
+  print read_file.count("\n").to_s.rjust(10)
 end
 
-# lオプション
-def option_l(read_file)
-  print '     '
-  print read_file.split(/\s+/).length
-  print '    '
-  print read_file.bytesize
+# lオプションが指定されない場合
+def not_exists_option_l(read_file)
+  print read_file.split(/\s+/).length.to_s.rjust(10)
+  print read_file.bytesize.to_s.rjust(10)
 end
 
 # ファイルごとの情報表示
-def file_values(option)
+def print_file_values(option)
   ARGV.each do |file|
     read_file = File.read(file)
-    print '     '
-    count_lines(read_file)
-    option_l(read_file) if option['l'] != true
-    print ' '
-    puts file
+    print_lines(read_file)
+    not_exists_option_l(read_file) unless option['l']
+    puts " #{file}"
   end
 end
 
 # 引数に複数ファイルを渡された場合のtotal表示
-def total_values(option)
+def print_total_values(option)
   total_lines = 0
   total_words = 0
   total_bytesize = 0
@@ -40,35 +36,30 @@ def total_values(option)
     total_words += read_file.split(/\s+/).length
     total_bytesize += read_file.bytesize
   end
-  print '     '
-  print total_lines
-  if option['l'] != true
-    print '     '
-    print total_words
-    print '    '
-    print total_bytesize
+  print total_lines.to_s.rjust(10)
+  unless option['l']
+    print total_words.to_s.rjust(10)
+    print total_bytesize.to_s.rjust(10)
   end
-  print ' '
-  puts 'total'
+  puts 'total'.rjust(6)
 end
 
 # 引数が与えられていた場合の出力
 def print_wc(option)
-  file_values(option)
-  total_values(option) if ARGV.length >= 2
+  print_file_values(option)
+  print_total_values(option) if ARGV.length >= 2
 end
 
 # 標準入力が与えられた場合の出力
-def standard_input_values(option)
+def print_wc_passed_by_stdin(option)
   read_file = $stdin.read
-  print '     '
-  count_lines(read_file)
-  option_l(read_file) if option['l'] != true
+  print_lines(read_file)
+  not_exists_option_l(read_file) unless option['l']
   print "\n"
 end
 
 if ARGV.length >= 1
   print_wc(option)
 else
-  standard_input_values(option)
+  print_wc_passed_by_stdin(option)
 end
