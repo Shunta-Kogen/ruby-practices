@@ -30,10 +30,10 @@ class Game
                       elsif frame.spare?
                         STRIKE + @frames[i + 1].first_shot
                       else
-                        frame.score
+                        frame.frame_score
                       end
       when 9
-        game_score += frame.score
+        game_score += frame.frame_score
       end
     end
     game_score

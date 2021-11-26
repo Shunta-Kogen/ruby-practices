@@ -12,7 +12,7 @@ class Frame
     @third_shot = Shot.new(@frame[2]).shot_score
   end
 
-  def score
+  def frame_score
     [first_shot, second_shot, third_shot].sum
   end
 
@@ -21,6 +21,6 @@ class Frame
   end
 
   def spare?
-    first_shot != 10 && score == 10
+    first_shot != 10 && frame_score == 10
   end
 end
