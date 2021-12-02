@@ -7,11 +7,6 @@ require 'date'
 require 'optparse'
 
 class LongFormat
-  attr_reader :filedata
-
-  COLUMNS = 3.to_f
-  COLUMN_SPACE = 5
-
   def initialize(option)
     @filedata = Filedata.new(option).filedata
   end
