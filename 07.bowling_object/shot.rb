@@ -7,7 +7,7 @@ class Shot
     @mark = mark
   end
 
-  def shot_score
+  def score
     @mark == 'X' ? STRIKE : @mark.to_i
   end
 end
