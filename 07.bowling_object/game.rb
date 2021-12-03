@@ -6,12 +6,12 @@ require './frame'
 class Game
   STRIKE = 10
 
-  def initialize(marks)
-    shots = marks.split(',')
+  def initialize(input)
+    marks = input.split(',')
     frames = []
     10.times do |i|
-      frames << (shots.first == 'X' ? [shots.shift] : shots.shift(2))
-      frames[-1].concat(shots) if i == 9
+      frames << (marks.first == 'X' ? [marks.shift] : marks.shift(2))
+      frames[-1].concat(marks) if i == 9
     end
     @frames = frames.map { |frame| Frame.new(frame) }
   end
