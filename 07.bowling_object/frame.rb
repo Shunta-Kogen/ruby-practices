@@ -7,12 +7,12 @@ class Frame
 
   def initialize(frame)
     @frame = frame
-    @first_shot = Shot.new(@frame[0]).shot_score
-    @second_shot = Shot.new(@frame[1]).shot_score
-    @third_shot = Shot.new(@frame[2]).shot_score
+    @first_shot = Shot.new(@frame[0]).score
+    @second_shot = Shot.new(@frame[1]).score
+    @third_shot = Shot.new(@frame[2]).score
   end
 
-  def frame_score
+  def score
     [first_shot, second_shot, third_shot].sum
   end
 
@@ -21,6 +21,6 @@ class Frame
   end
 
   def spare?
-    first_shot != 10 && frame_score == 10
+    !strike? && score == 10
   end
 end
