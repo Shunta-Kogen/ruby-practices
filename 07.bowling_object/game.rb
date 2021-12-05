@@ -6,17 +6,18 @@ require './frame'
 class Game
   STRIKE = 10
 
-  def initialize(input)
-    marks = input.split(',')
-    frames = []
-    10.times do |i|
-      frames << (marks.first == 'X' ? [marks.shift] : marks.shift(2))
-      frames[-1].concat(marks) if i == 9
+  def initialize(marks)
+    shots = marks.split(',')
+    @frames = 10.times.map do |i|
+      if (0..8).include?(i)
+        Frame.new(shots.first == 'X' ? [shots.shift] : shots.shift(2))
+      else
+        Frame.new(shots)
+      end
     end
-    @frames = frames.map { |frame| Frame.new(frame) }
   end
 
-  def game_score
+  def score
     game_score = 0
     @frames.each_with_index do |frame, i|
       case i
@@ -36,11 +37,9 @@ class Game
         game_score += frame.score
       end
     end
-    game_score
+    score
   end
 end
 
 marks = ARGV[0]
 game = Game.new(marks)
-
-puts game.game_score
