@@ -8,8 +8,8 @@ class Game
 
   def initialize(marks)
     shots = marks.split(',')
-    @frames = 10.times.map do |i|
-      if (0..8).include?(i)
+    @frames = Array.new(10) do |idx|
+      if (0..8).cover?(idx)
         Frame.new(shots.first == 'X' ? [shots.shift] : shots.shift(2))
       else
         Frame.new(shots)
@@ -17,29 +17,42 @@ class Game
     end
   end
 
+  def last_frame?(idx)
+    idx == 9
+  end
+
+  def next_frame(frame, idx)
+    frame[idx + 1]
+  end
+
+  def strike_bonus(frame, idx)
+    next_frame = next_frame(frame, idx)
+    bonus_first_shot = next_frame.first_shot
+    bonus_second_shot = if next_frame.strike?
+                          idx == 8 ? next_frame.second_shot : @frames[idx + 2].first_shot
+                        else
+                          next_frame.second_shot
+                        end
+    [bonus_first_shot, bonus_second_shot].sum
+  end
+
+  def spare_bonus(frame, idx)
+    next_frame(frame, idx).first_shot
+  end
+
   def score
-    game_score = 0
-    @frames.each_with_index do |frame, i|
-      case i
-      when 0..8
-        game_score += if i == 8 && frame.strike? && @frames[i + 1].strike?
-                        STRIKE + STRIKE + @frames[i + 1].second_shot
-                      elsif frame.strike? && @frames[i + 1].strike?
-                        STRIKE + STRIKE + @frames[i + 2].first_shot
-                      elsif frame.strike?
-                        STRIKE + @frames[i + 1].first_shot + @frames[i + 1].second_shot
-                      elsif frame.spare?
-                        STRIKE + @frames[i + 1].first_shot
-                      else
-                        frame.score
-                      end
-      when 9
-        game_score += frame.score
+    @frames.each_with_index.sum do |frame, idx|
+      if frame.strike? && !last_frame?(idx)
+        strike_bonus(@frames, idx) + frame.score
+      elsif frame.spare? && !last_frame?(idx)
+        spare_bonus(@frames, idx) + frame.score
+      else
+        frame.score
       end
     end
-    score
   end
 end
 
 marks = ARGV[0]
 game = Game.new(marks)
+p game.score
