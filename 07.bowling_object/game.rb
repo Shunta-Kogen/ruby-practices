@@ -8,15 +8,11 @@ class Game
     shots = marks.split(',')
     @frames = Array.new(10) do |idx|
       if (0..8).cover?(idx)
-        Frame.new(shots.first == 'X' ? [shots.shift] : shots.shift(2))
+        Frame.new(shots.first == 'X' ? [shots.shift] : shots.shift(2), idx)
       else
-        Frame.new(shots)
+        Frame.new(shots, idx)
       end
     end
-  end
-
-  def last_frame?(idx)
-    idx == 9
   end
 
   def next_frame(frame, idx)
@@ -40,9 +36,9 @@ class Game
 
   def score
     @frames.each_with_index.sum do |frame, idx|
-      if frame.strike? && !last_frame?(idx)
+      if frame.strike? && !frame.last?
         strike_bonus(@frames, idx) + frame.score
-      elsif frame.spare? && !last_frame?(idx)
+      elsif frame.spare? && !frame.last?
         spare_bonus(@frames, idx) + frame.score
       else
         frame.score
