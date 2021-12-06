@@ -4,8 +4,6 @@ require './shot'
 require './frame'
 
 class Game
-  STRIKE = 10
-
   def initialize(marks)
     shots = marks.split(',')
     @frames = Array.new(10) do |idx|
