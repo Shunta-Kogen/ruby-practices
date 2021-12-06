@@ -15,12 +15,12 @@ class Game
     end
   end
 
-  def next_frame(frame, idx)
-    frame[idx + 1]
+  def next_frame(idx)
+    @frames[idx + 1]
   end
 
-  def strike_bonus(frame, idx)
-    next_frame = next_frame(frame, idx)
+  def strike_bonus(idx)
+    next_frame = next_frame(idx)
     bonus_first_shot = next_frame.first_shot
     bonus_second_shot = if next_frame.strike?
                           idx == 8 ? next_frame.second_shot : @frames[idx + 2].first_shot
@@ -30,16 +30,16 @@ class Game
     [bonus_first_shot, bonus_second_shot].sum
   end
 
-  def spare_bonus(frame, idx)
-    next_frame(frame, idx).first_shot
+  def spare_bonus(idx)
+    next_frame(idx).first_shot
   end
 
   def score
     @frames.each_with_index.sum do |frame, idx|
       if frame.strike? && !frame.last?
-        strike_bonus(@frames, idx) + frame.score
+        strike_bonus(idx) + frame.score
       elsif frame.spare? && !frame.last?
-        spare_bonus(@frames, idx) + frame.score
+        spare_bonus(idx) + frame.score
       else
         frame.score
       end
