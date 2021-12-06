@@ -15,6 +15,20 @@ class Game
     end
   end
 
+  def score
+    @frames.each_with_index.sum do |frame, idx|
+      if frame.strike? && !frame.last?
+        strike_bonus(idx) + frame.score
+      elsif frame.spare? && !frame.last?
+        spare_bonus(idx) + frame.score
+      else
+        frame.score
+      end
+    end
+  end
+
+  private
+
   def next_frame(idx)
     @frames[idx + 1]
   end
@@ -32,18 +46,6 @@ class Game
 
   def spare_bonus(idx)
     next_frame(idx).first_shot
-  end
-
-  def score
-    @frames.each_with_index.sum do |frame, idx|
-      if frame.strike? && !frame.last?
-        strike_bonus(idx) + frame.score
-      elsif frame.spare? && !frame.last?
-        spare_bonus(idx) + frame.score
-      else
-        frame.score
-      end
-    end
   end
 end
 
