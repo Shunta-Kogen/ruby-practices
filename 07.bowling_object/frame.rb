@@ -23,7 +23,7 @@ class Frame
   def spare?
     !strike? && score == 10
   end
-  
+
   def last?
     @idx == 9
   end
