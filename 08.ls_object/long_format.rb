@@ -65,7 +65,8 @@ class LongFormat
   end
 
   def hardlink(file)
-    print file.nlink.to_s.ljust(2)
+    print file.nlink.to_s.rjust(3)
+    print ' '
   end
 
   def access_right(file)
