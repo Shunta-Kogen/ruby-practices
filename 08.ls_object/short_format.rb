@@ -1,25 +1,28 @@
 # frozen_string_literal: true
 
-require './option'
-require './filedata'
+require_relative 'file_data'
 
 class ShortFormat
   COLUMNS = 3.to_f
   COLUMN_SPACE = 5
 
-  def initialize(option)
-    @filedata = Filedata.new(option).filedata
+  def initialize(option, file_data)
+    @option = option
+    @file_data = file_data
+    @files = @file_data.map do |file|
+      FileData.new(file)
+    end
   end
 
   def output
-    filenames = @filedata.each_slice((@filedata.length / COLUMNS).ceil).to_a
+    filenames = @file_data.each_slice((@file_data.length / COLUMNS).ceil).to_a
 
     (filenames.first.length - filenames.last.length).times do
       filenames.last << ' '
     end
 
     transposed_filenames = filenames.transpose
-    longest_filename_length = @filedata.map(&:length).max
+    longest_filename_length = @file_data.map(&:length).max
 
     transposed_filenames.each do |filename|
       filename.each do |file|
