@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'optparse'
-
 class Option
   def initialize(option)
     @option = option
