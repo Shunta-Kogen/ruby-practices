@@ -1,32 +1,29 @@
 # frozen_string_literal: true
 
-require_relative 'file_data'
-
 class ShortFormat
   COLUMNS = 3.to_f
   COLUMN_SPACE = 5
 
-  def initialize(option, file_data)
+  def initialize(option, file_data_list)
     @option = option
-    @file_data = file_data
-    @files = @file_data.map do |file|
-      FileData.new(file)
-    end
+    @file_data_list = file_data_list
   end
 
   def output
-    filenames = @file_data.each_slice((@file_data.length / COLUMNS).ceil).to_a
+    name_list = @file_data_list.map {|file_data| file_data.name}
 
-    (filenames.first.length - filenames.last.length).times do
-      filenames.last << ' '
+    split_name_list = name_list.each_slice((name_list.length / COLUMNS).ceil).to_a
+
+    (split_name_list.first.length - split_name_list.last.length).times do
+      split_name_list.last << ' '
     end
 
-    transposed_filenames = filenames.transpose
-    longest_filename_length = @file_data.map(&:length).max
+    transposed_split_name_list = split_name_list.transpose
+    longest_name_length = name_list.map(&:length).max
 
-    transposed_filenames.each do |filename|
-      filename.each do |file|
-        print file.ljust(longest_filename_length + COLUMN_SPACE, ' ')
+    transposed_split_name_list.each do |transposed_split_names|
+      transposed_split_names.each do |transposed_split_name|
+        print transposed_split_name.ljust(longest_name_length + COLUMN_SPACE, ' ')
       end
       print "\n"
     end
