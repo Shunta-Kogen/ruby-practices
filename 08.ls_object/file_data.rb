@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'etc'
-require 'date'
 
 class FileData
+  attr_reader :name
+
   def initialize(file)
     @file = File::Stat.new(file)
+    @name = file
   end
 
   def blocks
@@ -18,10 +20,10 @@ class FileData
     filetype_number = filemode_number[0..1]
     permission_number = filemode_number[3..5]
 
-    print get_filetype(filetype_number)
-    print get_permission(permission_number[0])
-    print get_permission(permission_number[1])
-    print get_permission(permission_number[2]).ljust(4)
+    filemode = get_filetype(filetype_number) +
+               get_permission(permission_number[0]) +
+               get_permission(permission_number[1]) +
+               get_permission(permission_number[2])
   end
 
   def get_filetype(filetype_number)
@@ -50,32 +52,22 @@ class FileData
   end
 
   def hardlink
-    print @file.nlink.to_s.rjust(3)
-    print ' '
+    @file.nlink
   end
 
   def owner
-    print Etc.getpwuid(@file.uid).name.ljust(10)
+    Etc.getpwuid(@file.uid).name
   end
 
   def group
-    print Etc.getgrgid(@file.gid).name.ljust(6)
+    Etc.getgrgid(@file.gid).name
   end
 
   def filesize
-    print @file.size.to_s.rjust(5)
-    print ' '
+    @file.size
   end
 
-  def timestamp
-    time_stamp = @file.mtime
-    time_stamp_to_date = time_stamp.to_date
-    today_to_6_months_ago = Range.new(Date.today << 6, Date.today)
-
-    if today_to_6_months_ago.cover?(time_stamp_to_date)
-      print time_stamp.strftime('%_m %e %R').ljust(12)
-    else
-      print time_stamp.strftime('%_m %e %Y').ljust(11)
-    end
+  def mtime
+    @file.mtime
   end
 end
