@@ -4,8 +4,6 @@ require 'etc'
 require 'date'
 
 class FileData
-  attr_reader :file_data
-
   def initialize(file)
     @file = File::Stat.new(file)
   end
