@@ -10,7 +10,7 @@ class LongFormat
 
   def output
     total_blocks
-    @file_data_list.each_with_index do |file_data, i|
+    @file_data_list.each do |file_data|
       print file_data.filemode.ljust(4)
       print file_data.hardlink.to_s.rjust(3) + ' '
       print file_data.owner.ljust(10)
