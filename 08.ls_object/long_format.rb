@@ -23,7 +23,7 @@ class LongFormat
       if today_to_6_months_ago.cover?(time_stamp_to_date)
         print time_stamp.strftime('%_m %e %R').ljust(12)
       else
-        print time_stamp.strftime('%_m %e %Y').ljust(11)
+        print time_stamp.strftime('%_m %e  %Y').ljust(12)
       end
 
       print file_data.name
