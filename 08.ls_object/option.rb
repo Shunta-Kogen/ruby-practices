@@ -5,15 +5,15 @@ class Option
     @option = option
   end
 
-  def a_option?
+  def include_dot_file?
     @option['a']
   end
 
-  def l_option?
+  def long_formatter?
     @option['l']
   end
 
-  def r_option?
+  def reverse?
     @option['r']
   end
 end
