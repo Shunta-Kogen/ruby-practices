@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 require 'optparse'
 require_relative 'option'
 require_relative 'file_data'
-require_relative 'short_format'
-require_relative 'long_format'
+require_relative 'short_formatter'
+require_relative 'long_formatter'
 
 class Ls
   def initialize(option)
@@ -12,29 +10,13 @@ class Ls
   end
 
   def output
-    if @option.l_option?
-      long_format.output
-    else
-      short_format.output
-    end
-  end
-
-  private
-
-  def short_format
-    short_format = ShortFormat.new(@option, file_data_list)
-  end
-
-  def long_format
-    long_format = LongFormat.new(@option, file_data_list)
-  end
-
-  def file_data_list
-    file_names = @option.a_option? ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
-    file_names.reverse! if @option.r_option?
+    file_names = @option.include_dot_file? ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+    file_names.reverse! if @option.reverse?
     file_data_list = file_names.map do |file|
       FileData.new(file)
     end
+    formatter = @option.long_formatter? ? LongFormatter.new(@option, file_data_list) : ShortFormatter.new(@option, file_data_list)
+    formatter.output
   end
 end
 
