@@ -11,7 +11,7 @@ class FileData
     '10' => '-',
     '12' => 'l',
     '14' => 's'
-  }
+  }.freeze
 
   PERMISSION_TABLE = {
     '0' => '---',
@@ -22,7 +22,7 @@ class FileData
     '5' => 'r-x',
     '6' => 'rw-',
     '7' => 'rwx'
-  }
+  }.freeze
 
   attr_reader :name
 
@@ -42,9 +42,9 @@ class FileData
     permission_number = filemode_number[3..5]
 
     FILETYPE_TABLE[filetype_number] +
-    PERMISSION_TABLE[permission_number[0]] +
-    PERMISSION_TABLE[permission_number[1]] +
-    PERMISSION_TABLE[permission_number[2]]
+    3.times.map do |n|
+      PERMISSION_TABLE[permission_number[n]]
+    end.join
   end
 
   def hardlink
