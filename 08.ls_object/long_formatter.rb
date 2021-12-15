@@ -13,10 +13,10 @@ class LongFormatter
 
     @file_data_list.each do |file_data|
       print file_data.filemode.ljust(4)
-      print file_data.hardlink.to_s.rjust(3) + ' '
+      print "#{file_data.hardlink.to_s.rjust(3)} "
       print file_data.owner.ljust(10)
       print file_data.group.ljust(6)
-      print file_data.filesize.to_s.rjust(5) + ' '
+      print "#{file_data.filesize.to_s.rjust(5)} "
       print time_stamp(file_data.mtime).ljust(12)
       print file_data.name
       print "\n"

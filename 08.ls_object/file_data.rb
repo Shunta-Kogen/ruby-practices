@@ -42,9 +42,9 @@ class FileData
     permission_number = filemode_number[3..5]
 
     FILETYPE_TABLE[filetype_number] +
-    3.times.map do |n|
-      PERMISSION_TABLE[permission_number[n]]
-    end.join
+      Array.new(3) do |n|
+        PERMISSION_TABLE[permission_number[n]]
+      end.join
   end
 
   def hardlink

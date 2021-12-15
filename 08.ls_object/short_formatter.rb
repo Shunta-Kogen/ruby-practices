@@ -10,7 +10,7 @@ class ShortFormatter
   end
 
   def output
-    filenames = @file_data_list.map {|file_data| file_data.name}
+    filenames = @file_data_list.map(&:name)
 
     split_filenames = filenames.each_slice((filenames.length / COLUMNS.to_f).ceil).to_a
 
