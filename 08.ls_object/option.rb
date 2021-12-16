@@ -9,7 +9,7 @@ class Option
     @option['a']
   end
 
-  def long_formatter?
+  def long_format?
     @option['l']
   end
 

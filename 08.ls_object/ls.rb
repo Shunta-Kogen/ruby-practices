@@ -17,7 +17,7 @@ class Ls
     file_data_list = file_names.map do |file|
       FileData.new(file)
     end
-    formatter = @option.long_formatter? ? LongFormatter.new(@option, file_data_list) : ShortFormatter.new(@option, file_data_list)
+    formatter = @option.long_format? ? LongFormatter.new(@option, file_data_list) : ShortFormatter.new(@option, file_data_list)
     formatter.output
   end
 end
